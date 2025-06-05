@@ -12,6 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     patternSelect.value = 'Glider';
 
+    /**
+     * Center a pattern within the grid.
+     * @param {Array<Array<number>>} pattern - The pattern to center.
+     * @param {number} rows - Number of grid rows.
+     * @param {number} cols - Number of grid columns.
+     * @returns {Array<number>} Offset [row, col] to center the pattern.
+     */
     function centerPattern(pattern, rows, cols) {
         // Find pattern bounds
         let maxRow = 0, maxCol = 0;
@@ -24,6 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return [offsetRow, offsetCol];
     }
 
+    /**
+     * Initialize the game, grid, and controls with the given size and pattern.
+     * @param {number} rows - Number of grid rows.
+     * @param {number} cols - Number of grid columns.
+     * @param {string} patternName - Name of the pattern to initialize.
+     */
     function initializeGame(rows, cols, patternName) {
         game = new window.GameOfLife(rows, cols);
         grid = new window.Grid(game, 'grid');

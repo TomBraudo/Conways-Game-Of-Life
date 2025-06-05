@@ -1,4 +1,14 @@
+/**
+ * Class responsible for handling user controls and simulation state.
+ * @class
+ */
 window.Controls = class Controls {
+    /**
+     * Create a new Controls instance.
+     * @param {GameOfLife} game - The GameOfLife instance.
+     * @param {Grid} grid - The Grid instance.
+     * @param {number} [speed=200] - Simulation speed in ms.
+     */
     constructor(game, grid, speed = 200) {
         this.game = game;
         this.grid = grid;
@@ -7,6 +17,9 @@ window.Controls = class Controls {
         this.init();
     }
 
+    /**
+     * Initialize control buttons and event listeners.
+     */
     init() {
         this.startBtn = document.getElementById('startBtn');
         this.stopBtn = document.getElementById('stopBtn');
@@ -22,6 +35,9 @@ window.Controls = class Controls {
         this.updateButtonStates();
     }
 
+    /**
+     * Start the simulation.
+     */
     start() {
         if (!this.game.isRunning) {
             this.game.isRunning = true;
@@ -30,6 +46,9 @@ window.Controls = class Controls {
         }
     }
 
+    /**
+     * Start the simulation interval.
+     */
     runInterval() {
         if (this.intervalId) clearInterval(this.intervalId);
         this.intervalId = setInterval(() => {
@@ -38,6 +57,10 @@ window.Controls = class Controls {
         }, this.speed);
     }
 
+    /**
+     * Set the simulation speed.
+     * @param {number} newSpeed - New interval in ms.
+     */
     setSpeed(newSpeed) {
         this.speed = newSpeed;
         if (this.game.isRunning) {
@@ -45,6 +68,9 @@ window.Controls = class Controls {
         }
     }
 
+    /**
+     * Stop the simulation.
+     */
     stop() {
         if (this.game.isRunning) {
             this.game.isRunning = false;
@@ -53,6 +79,9 @@ window.Controls = class Controls {
         }
     }
 
+    /**
+     * Stop the simulation and reset generation count.
+     */
     stopAndReset() {
         this.stop();
         this.game.generation = 0;
@@ -60,18 +89,27 @@ window.Controls = class Controls {
         document.getElementById('generation').textContent = 0;
     }
 
+    /**
+     * Clear the grid and reset the simulation.
+     */
     clear() {
         this.stopAndReset();
         this.game.clear();
         this.grid.update();
     }
 
+    /**
+     * Randomize the grid and reset the simulation.
+     */
     randomize() {
         this.stopAndReset();
         this.game.randomize();
         this.grid.update();
     }
 
+    /**
+     * Update the enabled/disabled state of control buttons.
+     */
     updateButtonStates() {
         this.startBtn.disabled = this.game.isRunning;
         this.stopBtn.disabled = !this.game.isRunning;
@@ -79,6 +117,27 @@ window.Controls = class Controls {
         this.randomBtn.disabled = this.game.isRunning;
     }
 
+    /**
+     * Show a temporary status message by changing the save button appearance.
+     * @param {string} message - The message to display on the button.
+     */
+    showStatusMessage(message) {
+        const saveBtn = document.getElementById('saveBtn');
+        if (!saveBtn) return;
+        const originalText = saveBtn.textContent;
+        saveBtn.textContent = message;
+        saveBtn.classList.add('save-success');
+        saveBtn.disabled = true;
+        setTimeout(() => {
+            saveBtn.classList.remove('save-success');
+            saveBtn.textContent = originalText;
+            saveBtn.disabled = false;
+        }, 1200);
+    }
+
+    /**
+     * Save the current game state to localStorage.
+     */
     saveState() {
         const state = {
             grid: this.game.grid,
@@ -87,8 +146,12 @@ window.Controls = class Controls {
             cols: this.game.cols
         };
         localStorage.setItem('gameOfLifeState', JSON.stringify(state));
+        this.showStatusMessage('State saved!');
     }
 
+    /**
+     * Restore the game state from localStorage.
+     */
     restoreState() {
         const stateStr = localStorage.getItem('gameOfLifeState');
         if (!stateStr) return;
@@ -109,6 +172,9 @@ window.Controls = class Controls {
         }
     }
 
+    /**
+     * Wire up the save and restore buttons.
+     */
     wireSaveRestoreButtons() {
         const saveBtn = document.getElementById('saveBtn');
         const restoreBtn = document.getElementById('restoreBtn');

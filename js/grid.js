@@ -1,4 +1,13 @@
+/**
+ * Class responsible for rendering and managing the grid UI.
+ * @class
+ */
 window.Grid = class Grid {
+    /**
+     * Create a new Grid instance.
+     * @param {GameOfLife} game - The GameOfLife instance.
+     * @param {string} containerId - The DOM element ID for the grid container.
+     */
     constructor(game, containerId) {
         this.game = game;
         this.container = document.getElementById(containerId);
@@ -6,11 +15,17 @@ window.Grid = class Grid {
         this.init();
     }
 
+    /**
+     * Initialize the grid UI.
+     */
     init() {
         this.container.style.gridTemplateColumns = `repeat(${this.game.cols}, 20px)`;
         this.createCells();
     }
 
+    /**
+     * Create the grid cells and attach event listeners.
+     */
     createCells() {
         this.container.innerHTML = '';
         this.cells = [];
@@ -41,6 +56,9 @@ window.Grid = class Grid {
         }
     }
 
+    /**
+     * Update the grid UI to reflect the current game state.
+     */
     update() {
         this.cells.forEach(cell => {
             const row = parseInt(cell.dataset.row);

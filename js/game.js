@@ -1,4 +1,13 @@
+/**
+ * Class representing Conway's Game of Life logic and state.
+ * @class
+ */
 window.GameOfLife = class GameOfLife {
+    /**
+     * Create a new Game of Life instance.
+     * @param {number} [rows=40] - Number of rows in the grid.
+     * @param {number} [cols=40] - Number of columns in the grid.
+     */
     constructor(rows = 40, cols = 40) {
         this.rows = rows;
         this.cols = cols;
@@ -7,10 +16,17 @@ window.GameOfLife = class GameOfLife {
         this.isRunning = false;
     }
 
+    /**
+     * Create an empty grid.
+     * @returns {boolean[][]} 2D array representing the grid.
+     */
     createEmptyGrid() {
         return Array(this.rows).fill().map(() => Array(this.cols).fill(false));
     }
 
+    /**
+     * Randomize the grid with alive and dead cells.
+     */
     randomize() {
         this.grid = this.grid.map(row => 
             row.map(() => Math.random() > 0.7)
@@ -18,11 +34,20 @@ window.GameOfLife = class GameOfLife {
         this.generation = 0;
     }
 
+    /**
+     * Clear the grid (all cells dead).
+     */
     clear() {
         this.grid = this.createEmptyGrid();
         this.generation = 0;
     }
 
+    /**
+     * Get the state of a cell.
+     * @param {number} row - Row index.
+     * @param {number} col - Column index.
+     * @returns {boolean} True if cell is alive, false otherwise.
+     */
     getCell(row, col) {
         if (row < 0 || row >= this.rows || col < 0 || col >= this.cols) {
             return false;
@@ -30,6 +55,12 @@ window.GameOfLife = class GameOfLife {
         return this.grid[row][col];
     }
 
+    /**
+     * Count the number of alive neighbors for a cell.
+     * @param {number} row - Row index.
+     * @param {number} col - Column index.
+     * @returns {number} Number of alive neighbors.
+     */
     countNeighbors(row, col) {
         let count = 0;
         for (let i = -1; i <= 1; i++) {
@@ -43,6 +74,9 @@ window.GameOfLife = class GameOfLife {
         return count;
     }
 
+    /**
+     * Advance the game by one generation.
+     */
     nextGeneration() {
         const newGrid = this.createEmptyGrid();
         
@@ -63,12 +97,23 @@ window.GameOfLife = class GameOfLife {
         this.generation++;
     }
 
+    /**
+     * Toggle the state of a cell (alive/dead).
+     * @param {number} row - Row index.
+     * @param {number} col - Column index.
+     */
     toggleCell(row, col) {
         if (row >= 0 && row < this.rows && col >= 0 && col < this.cols) {
             this.grid[row][col] = !this.grid[row][col];
         }
     }
 
+    /**
+     * Place a pattern on the grid at a given offset.
+     * @param {Array<Array<number>>} pattern - Array of [row, col] pairs.
+     * @param {number} [offsetRow=0] - Row offset.
+     * @param {number} [offsetCol=0] - Column offset.
+     */
     placePattern(pattern, offsetRow = 0, offsetCol = 0) {
         for (const [r, c] of pattern) {
             const row = offsetRow + r;
@@ -80,6 +125,10 @@ window.GameOfLife = class GameOfLife {
     }
 };
 
+/**
+ * Predefined patterns for the Game of Life.
+ * @type {Object.<string, Array<Array<number>>>}
+ */
 window.PATTERNS = {
     'Glider': [
         [0, 1], [1, 2], [2, 0], [2, 1], [2, 2]
