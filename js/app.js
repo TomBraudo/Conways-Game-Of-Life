@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     let game, grid, controls;
     let currentSpeed = 200;
-
     // Populate pattern dropdown
     const patternSelect = document.getElementById('patternSelect');
+    let lastPatternValue = patternSelect.value;
     for (const name in window.PATTERNS) {
         const option = document.createElement('option');
         option.value = name;
@@ -63,6 +63,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const size = parseInt(gridSizeSelect.value);
         if (controls) controls.stopAndReset();
         initializeGame(size, size, patternSelect.value);
+        lastPatternValue = patternSelect.value;
+    });
+
+    // Allow re-selecting the same pattern to reset the grid when stopped
+    patternSelect.addEventListener('click', () => {
+        if (!game.isRunning && patternSelect.value === lastPatternValue) {
+            const size = parseInt(gridSizeSelect.value);
+            if (controls) controls.stopAndReset();
+            initializeGame(size, size, patternSelect.value);
+        }
     });
 
     // Speed control

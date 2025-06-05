@@ -22,12 +22,14 @@ window.Controls = class Controls {
      */
     init() {
         this.startBtn = document.getElementById('startBtn');
+        this.stepBtn = document.getElementById('stepBtn');
         this.stopBtn = document.getElementById('stopBtn');
         this.clearBtn = document.getElementById('clearBtn');
         this.randomBtn = document.getElementById('randomBtn');
         this.wireSaveRestoreButtons();
 
         this.startBtn.addEventListener('click', () => this.start());
+        this.stepBtn.addEventListener('click', () => this.step());
         this.stopBtn.addEventListener('click', () => this.stop());
         this.clearBtn.addEventListener('click', () => this.clear());
         this.randomBtn.addEventListener('click', () => this.randomize());
@@ -108,6 +110,17 @@ window.Controls = class Controls {
     }
 
     /**
+     * Advance the simulation by one generation.
+     */
+    step() {
+        if (!this.game.isRunning) {
+            this.game.nextGeneration();
+            this.grid.update();
+            document.getElementById('generation').textContent = this.game.generation;
+        }
+    }
+
+    /**
      * Update the enabled/disabled state of control buttons.
      */
     updateButtonStates() {
@@ -115,6 +128,26 @@ window.Controls = class Controls {
         this.stopBtn.disabled = !this.game.isRunning;
         this.clearBtn.disabled = this.game.isRunning;
         this.randomBtn.disabled = this.game.isRunning;
+        this.stepBtn.disabled = this.game.isRunning;
+        // Disable other interactables when running
+        const gridSize = document.getElementById('gridSize');
+        const patternSelect = document.getElementById('patternSelect');
+        const speedRange = document.getElementById('speedRange');
+        const saveBtn = document.getElementById('saveBtn');
+        const restoreBtn = document.getElementById('restoreBtn');
+        if (this.game.isRunning) {
+            if (gridSize) gridSize.disabled = true;
+            if (patternSelect) patternSelect.disabled = true;
+            if (speedRange) speedRange.disabled = false;
+            if (saveBtn) saveBtn.disabled = true;
+            if (restoreBtn) restoreBtn.disabled = true;
+        } else {
+            if (gridSize) gridSize.disabled = false;
+            if (patternSelect) patternSelect.disabled = false;
+            if (speedRange) speedRange.disabled = false;
+            if (saveBtn) saveBtn.disabled = false;
+            if (restoreBtn) restoreBtn.disabled = false;
+        }
     }
 
     /**
