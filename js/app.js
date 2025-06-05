@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initializeGame(size, size, 'Glider');
     });
 
-    // Only handle pattern changes (not re-selecting the same pattern)
+    // Handle pattern selection
     patternSelect.addEventListener('change', () => {
         const size = parseInt(gridSizeSelect.value);
         if (controls) controls.stopAndReset();
